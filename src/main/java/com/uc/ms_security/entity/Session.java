@@ -13,20 +13,36 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class Session {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 500)
+    @Column(
+            nullable = false,
+            unique = true,
+            length = 500
+    )
     private String token;
 
     @Column(nullable = false)
     private LocalDateTime expiration;
 
-    @Column(name = "code_2fa", length = 10)//snake_case
-    private String code2FA;// camelCase
+    @Column(
+            name = "code_2fa",
+            length = 10
+    )
+    private String code2FA;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "user_id",
+            nullable = false
+    )
     private User user;
 }
