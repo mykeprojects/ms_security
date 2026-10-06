@@ -27,6 +27,11 @@ public class ProfileController {
         return profileService.create(userId, dto);
     }
 
+    @GetMapping
+    public ProfileResponseDTO findByUserId(@PathVariable Long userId) {
+        return profileService.findByUserId(userId);
+    }
+
     @PutMapping
     public ProfileResponseDTO update(
             @PathVariable Long userId,
@@ -40,7 +45,6 @@ public class ProfileController {
         profileService.delete(userId);
     }
 }
-
 
 
 

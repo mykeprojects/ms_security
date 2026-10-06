@@ -1,7 +1,9 @@
 package com.uc.ms_security.service;
 
-import com.uc.ms_security.dto.session.*;
+import com.uc.ms_security.dto.session.SessionRequestDTO;
+import com.uc.ms_security.dto.session.SessionResponseDTO;
 import com.uc.ms_security.entity.Session;
+import com.uc.ms_security.entity.User;
 import com.uc.ms_security.exception.*;
 import com.uc.ms_security.mapper.SessionMapper;
 import com.uc.ms_security.repository.SessionRepository;
@@ -17,21 +19,32 @@ public class SessionService {
     private final UserRepository userRepository;
     private final SessionMapper mapper;
 
-    public SessionResponseDTO create(CreateSessionDTO dto) {
+    public SessionResponseDTO create(Long userId, SessionRequestDTO dto) {
         if (repository.existsByToken(dto.getToken())) throw new ApplicationException(ErrorCase.ALREADY_EXISTS, "Ya existe una sesión con este token");
         Session session = mapper.toEntity(dto);
-        session.setUser(userRepository.findById(dto.getUserId()).orElseThrow(() -> new ApplicationException(
-            ErrorCase.NOT_FOUND, "Usuario no encontrado con id: " + dto.getUserId())));
+        session.setUser(findUser(userId));
         return mapper.toResponseDTO(repository.save(session));
     }
-    public List<SessionResponseDTO> findAll() { return mapper.toResponseDTOList(repository.findAll()); }
-    public SessionResponseDTO findById(Long id) { return mapper.toResponseDTO(findEntity(id)); }
-    public SessionResponseDTO update(Long id, UpdateSessionDTO dto) {
-        Session session = findEntity(id);
-        if (repository.existsByTokenAndIdNot(dto.getToken(), id)) throw new ApplicationException(ErrorCase.ALREADY_EXISTS, "El token pertenece a otra sesión");
+    public List<SessionResponseDTO> findAllByUserId(Long userId) {
+        findUser(userId);
+        return mapper.toResponseDTOList(repository.findAllByUserId(userId));
+    }
+    public SessionResponseDTO findById(Long userId, Long sessionId) {
+        return mapper.toResponseDTO(findSession(userId, sessionId));
+    }
+    public SessionResponseDTO update(Long userId, Long sessionId, SessionRequestDTO dto) {
+        Session session = findSession(userId, sessionId);
+        if (repository.existsByTokenAndIdNot(dto.getToken(), sessionId)) throw new ApplicationException(ErrorCase.ALREADY_EXISTS, "El token pertenece a otra sesión");
         mapper.updateEntity(dto, session);
         return mapper.toResponseDTO(repository.save(session));
     }
-    public void delete(Long id) { repository.delete(findEntity(id)); }
-    private Session findEntity(Long id) { return repository.findById(id).orElseThrow(() -> new ApplicationException(ErrorCase.NOT_FOUND, "Sesión no encontrada con id: " + id)); }
+    public void delete(Long userId, Long sessionId) { repository.delete(findSession(userId, sessionId)); }
+    private User findUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ApplicationException(
+                ErrorCase.NOT_FOUND, "Usuario no encontrado con id: " + userId));
+    }
+    private Session findSession(Long userId, Long sessionId) {
+        return repository.findByIdAndUserId(sessionId, userId).orElseThrow(() -> new ApplicationException(
+                ErrorCase.NOT_FOUND, "Sesión no encontrada para este usuario"));
+    }
 }

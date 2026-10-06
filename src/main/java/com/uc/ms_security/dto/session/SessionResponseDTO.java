@@ -1,13 +1,12 @@
 package com.uc.ms_security.dto.session;
 
 import lombok.Value;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Value
 public class SessionResponseDTO {
     Long id;
-    Long userId;
     String token;
-    LocalDate expiration;
+    LocalDateTime expiration;
     String code2FA;
 }

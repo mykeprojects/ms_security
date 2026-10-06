@@ -22,6 +22,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             Long id
     );
 
+    @EntityGraph(attributePaths = {"sessions"})
+    Optional<User> findWithSessionsById(Long id);
+
 }
 
 //Que pasa si cambio la base de datos. Inversión de dependencias en un repositorio. Como aplicamos la inveersión de dependencias

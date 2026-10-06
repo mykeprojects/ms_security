@@ -1,6 +1,7 @@
 package com.uc.ms_security.controller;
 
-import com.uc.ms_security.dto.session.*;
+import com.uc.ms_security.dto.session.SessionRequestDTO;
+import com.uc.ms_security.dto.session.SessionResponseDTO;
 import com.uc.ms_security.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,13 +10,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/api/users/{userId}/sessions")
 @RequiredArgsConstructor
 public class SessionController {
     private final SessionService service;
-    @PostMapping @ResponseStatus(HttpStatus.CREATED) public SessionResponseDTO create(@Valid @RequestBody CreateSessionDTO dto) { return service.create(dto); }
-    @GetMapping public List<SessionResponseDTO> findAll() { return service.findAll(); }
-    @GetMapping("/{id}") public SessionResponseDTO findById(@PathVariable Long id) { return service.findById(id); }
-    @PutMapping("/{id}") public SessionResponseDTO update(@PathVariable Long id, @Valid @RequestBody UpdateSessionDTO dto) { return service.update(id, dto); }
-    @DeleteMapping("/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void delete(@PathVariable Long id) { service.delete(id); }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public SessionResponseDTO create(@PathVariable Long userId, @Valid @RequestBody SessionRequestDTO dto) {
+        return service.create(userId, dto);
+    }
+    @GetMapping
+    public List<SessionResponseDTO> findAll(@PathVariable Long userId) {
+        return service.findAllByUserId(userId);
+    }
+    @GetMapping("/{sessionId}")
+    public SessionResponseDTO findById(@PathVariable Long userId, @PathVariable Long sessionId) {
+        return service.findById(userId, sessionId);
+    }
+    @PutMapping("/{sessionId}")
+    public SessionResponseDTO update(@PathVariable Long userId, @PathVariable Long sessionId,
+                                    @Valid @RequestBody SessionRequestDTO dto) {
+        return service.update(userId, sessionId, dto);
+    }
+    @DeleteMapping("/{sessionId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long userId, @PathVariable Long sessionId) {
+        service.delete(userId, sessionId);
+    }
 }

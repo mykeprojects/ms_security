@@ -47,11 +47,21 @@ public class User {
     )
     private String password;
 
-        @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
         private Profile profile;
 
         @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
         private List<Session> sessions = new ArrayList<>();
+
+        public void addSession(Session session) {
+            sessions.add(session);
+            session.setUser(this);
+        }
+
+        public void removeSession(Session session) {
+            sessions.remove(session);
+            session.setUser(null);
+        }
 
         @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
         private List<UserRole> userRoles = new ArrayList<>();

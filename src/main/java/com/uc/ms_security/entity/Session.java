@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sessions")
@@ -21,10 +21,10 @@ public class Session {
     private String token;
 
     @Column(nullable = false)
-    private LocalDate expiration;
+    private LocalDateTime expiration;
 
-    @Column(nullable = false, length = 20)
-    private String code2FA;
+    @Column(name = "code_2fa", length = 10)//snake_case
+    private String code2FA;// camelCase
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
