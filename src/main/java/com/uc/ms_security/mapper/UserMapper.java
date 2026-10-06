@@ -1,0 +1,71 @@
+package com.uc.ms_security.mapper;
+//El mapper hace un proceso de conversión:
+//1.El mapper arma el objeto (en el dto vienen desarmados (JSON)) (de dto a entity)
+//2.Pasarlo de entity a dto.
+//3.Arma relaciones
+
+//Importa la entidad y los DTO.
+import com.uc.ms_security.dto.user.CreateUserDTO;
+import com.uc.ms_security.dto.user.UpdateUserDTO;
+import com.uc.ms_security.dto.user.UserDetailResponseDTO;
+import com.uc.ms_security.dto.user.UserResponseDTO;
+import com.uc.ms_security.entity.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+//@Component indica que es reutilizable
+@Component
+@RequiredArgsConstructor
+public class UserMapper {
+
+    private final ProfileMapper profileMapper;
+
+    //Transforma el DTO a Entity
+    public User toEntity(CreateUserDTO dto) {
+        User user = new User();//Crea la entidad para manipula la tabla
+
+        user.setName(dto.getName()); //Le asignamos los atributos
+        user.setEmail(dto.getEmail()); //Le asignamos los atributos
+        user.setPassword(dto.getPassword()); //Le asigamos los atributos
+
+        return user;
+    }
+
+    public void updateEntity(UpdateUserDTO dto, User user) {
+        //Hace las modificacions al usuario
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+
+        if (dto.getPassword() != null) {
+            user.setPassword(dto.getPassword());
+        }
+    }
+
+    //Cuando la respuesta va a salir se necesita este metodo.
+    public UserResponseDTO toResponseDTO(User user) {
+        return new UserResponseDTO( //Ocultar datos
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
+    }
+
+    public UserDetailResponseDTO toDetailResponseDTO(User user) {
+        return new UserDetailResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                profileMapper.toResponseDTO(user.getProfile())//Arrastra la relación
+        );
+    }
+
+    //Ver todos los usuarios
+    //map: mapea una lista
+    public List<UserResponseDTO> toResponseDTOList(List<User> users) {
+        return users.stream()
+                .map(this::toResponseDTO)
+                .toList();//Funciones propias de java para hacer procesos rápidos (velocidad y sintaxis)
+    }
+}
