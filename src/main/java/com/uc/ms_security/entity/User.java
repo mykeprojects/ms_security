@@ -63,6 +63,6 @@ public class User {
             session.setUser(null);
         }
 
-        @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+        @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
         private List<UserRole> userRoles = new ArrayList<>();
 }

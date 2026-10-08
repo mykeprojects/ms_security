@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_roles", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role_id"}))
+@Table(name = "user_roles", uniqueConstraints = @UniqueConstraint(
+        name = "uk_user_role",
+        columnNames = {"user_id", "role_id"}
+))
 @Getter
 @Setter
 @NoArgsConstructor

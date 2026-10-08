@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     boolean existsByEmail(String email);
 
     boolean existsByEmailAndIdNot(String email, Long id);
@@ -25,6 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"sessions"})
     Optional<User> findWithSessionsById(Long id);
 
+    @EntityGraph(attributePaths = {"userRoles", "userRoles.role"})
+    Optional<User> findWithRolesById(Long id);
 }
 
 //Que pasa si cambio la base de datos. Inversión de dependencias en un repositorio. Como aplicamos la inveersión de dependencias

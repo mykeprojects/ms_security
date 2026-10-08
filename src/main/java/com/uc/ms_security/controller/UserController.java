@@ -5,6 +5,7 @@ import com.uc.ms_security.dto.user.UpdateUserDTO;
 import com.uc.ms_security.dto.user.UserDetailResponseDTO;
 import com.uc.ms_security.dto.user.UserResponseDTO;
 import com.uc.ms_security.dto.user.UserSessionsResponseDTO;
+import com.uc.ms_security.dto.userrole.UserRolesResponseDTO;
 import com.uc.ms_security.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -58,5 +59,10 @@ public class UserController {
     @GetMapping("/{id}/detail-with-sessions")
     public UserSessionsResponseDTO findByIdAndSessions(@PathVariable Long id) {
         return userService.findByIdAndSessions(id);
+    }
+
+    @GetMapping("/{id}/detail-with-roles")
+    public UserRolesResponseDTO findByIdAndRoles(@PathVariable Long id) {
+        return userService.findByIdAndRoles(id);
     }
 }
