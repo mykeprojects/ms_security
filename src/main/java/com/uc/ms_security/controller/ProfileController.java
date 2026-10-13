@@ -3,14 +3,12 @@ package com.uc.ms_security.controller;
 import com.uc.ms_security.dto.profile.CreateProfileDTO;
 import com.uc.ms_security.dto.profile.UpdateProfileDTO;
 import com.uc.ms_security.dto.profile.ProfileResponseDTO;
-import com.uc.ms_security.dto.user.UserResponseDTO;
 import com.uc.ms_security.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users/{userId}/profile")
