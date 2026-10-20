@@ -27,24 +27,20 @@ public class UserMapper {
     private final UserRoleMapper userRoleMapper;
 
     //Transforma el DTO a Entity
-    public User toEntity(CreateUserDTO dto) {
+    public User toEntity(CreateUserDTO dto, String encodedPassword) {
         User user = new User();//Crea la entidad para manipula la tabla
 
         user.setName(dto.getName()); //Le asignamos los atributos
         user.setEmail(dto.getEmail()); //Le asignamos los atributos
-        user.setPassword(dto.getPassword()); //Le asigamos los atributos
+        user.setPassword(encodedPassword); //La contraseña ya fue protegida por el servicio
 
         return user;
     }
 
-    public void updateEntity(UpdateUserDTO dto, User user) {
+    public void updateBasicData(UpdateUserDTO dto, User user) {
         //Hace las modificacions al usuario
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-
-        if (dto.getPassword() != null) {
-            user.setPassword(dto.getPassword());
-        }
     }
 
     //Cuando la respuesta va a salir se necesita este metodo.

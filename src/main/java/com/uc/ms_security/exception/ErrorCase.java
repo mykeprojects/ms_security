@@ -4,5 +4,6 @@ public enum ErrorCase {
     NOT_FOUND,
     ALREADY_EXISTS,
     CONFLICT,
-    INVALID_OPERATION
+    INVALID_OPERATION,
+    UNAUTHORIZED
 }

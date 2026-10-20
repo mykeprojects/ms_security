@@ -12,7 +12,7 @@ import com.uc.ms_security.exception.ErrorCase;
 import com.uc.ms_security.mapper.UserMapper;
 import com.uc.ms_security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +26,7 @@ public class UserService {
     // Necesitamos una constantee del UserMapper.
     //Patrón Singleton: Un objeto que va a ayudar a el servicio a funcionar.
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO create(CreateUserDTO dto) { //Hace las validacions necesarias en este momento.
         if (userRepository.existsByEmail(dto.getEmail())) {
@@ -34,7 +35,8 @@ public class UserService {
                     "Ya existe un usuario con este email"
             );
         }
-        User user = userMapper.toEntity(dto); //Lo paso a una entidad con el mapper
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        User user = userMapper.toEntity(dto, encodedPassword); //Lo paso a una entidad con el mapper
         User savedUser = userRepository.save(user); //Le pido al repositorio que me lo guarde.(save sirve para actualizar o para crear)
         //savedUser tiene id porque ahora me lo esta creando
         return userMapper.toResponseDTO(savedUser); //Me devuelve las fichas del usuario para que no me manda contraseñas
@@ -97,7 +99,10 @@ public class UserService {
                     "El email pertenece a otro usuario"
             );
         }
-        userMapper.updateEntity(dto, user); //Pasan valores de la función por referencia
+        userMapper.updateBasicData(dto, user); //Pasan valores de la función por referencia
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         User updatedUser = userRepository.save(user);
         return userMapper.toResponseDTO(updatedUser);
     }

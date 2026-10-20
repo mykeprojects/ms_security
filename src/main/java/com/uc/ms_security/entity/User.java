@@ -43,7 +43,8 @@ public class User {
     private String email;
 
     @Column(
-            nullable = false  //no puede ser nulo
+            nullable = false, //no puede ser nulo
+            length = 255
     )
     private String password;
 
